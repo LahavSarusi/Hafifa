@@ -1,0 +1,62 @@
+summary: Get heroes
+tags:
+  - Heroes
+parameters:
+  - name: name
+    in: query
+    type: string
+    required: false
+  - name: suit_color
+    in: query
+    type: string
+    required: false
+  - name: has_cape
+    in: query
+    type: string
+    required: false
+responses:
+  200:
+    description: Success
+    schema:
+      $ref: '#/definitions/HeroResponse'
+  404:
+    description: Heroes not found
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - error
+          properties:
+            error:
+              type: string
+definitions:
+  HeroResponse:
+    type: object
+    properties:
+      id:
+        type: integer
+        description: Hero's unique identifier
+      name:
+        type: string
+        description: Hero's name
+      suit_color:
+        type: string
+        description: Hero's suit color
+      has_cape:
+        type: boolean
+        description: Whether the hero has a cape
+      last_mission:
+        type: string
+        format: date-time
+        description: Hero's last mission date
+      is_retired:
+        type: boolean
+        description: Whether the hero is retired
+    required:
+      - id
+      - name
+      - suit_color
+      - has_cape
+      - last_mission
+      - is_retired

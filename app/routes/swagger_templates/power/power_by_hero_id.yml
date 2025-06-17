@@ -1,0 +1,22 @@
+summary: Get powers by hero id
+tags:
+  - Powers
+parameters:
+  - name: hero_id
+    in: path
+    type: integer
+    required: true
+responses:
+  200:
+    description: Success
+  404:
+    description: Power not found
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - error
+          properties:
+            error:
+              type: string

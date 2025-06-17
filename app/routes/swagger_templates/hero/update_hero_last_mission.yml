@@ -1,0 +1,79 @@
+summary: Update hero's last mission timestamp
+description: Sets the hero's last_mission attribute to a new timestamp.
+tags:
+  - Heroes
+parameters:
+  - name: id
+    in: path
+    type: integer
+    required: true
+    description: The ID of the hero to update.
+  - in: body
+    name: timestamp_data
+    description: JSON object containing the new timestamp for the hero's last mission.
+    schema:
+      type: object
+      required:
+        - timestamp
+      properties:
+        timestamp:
+          type: string
+          format: date-time
+          description: The new timestamp in ISO 8601 format (e.g., "2024-06-17T10:00:00Z").
+responses:
+  200:
+    description: Hero's last mission updated successfully.
+    schema:
+      $ref: '#/definitions/HeroResponse' # Assuming HeroResponse is defined globally or in another shared YAML
+  400:
+    description: Invalid request data or timestamp format.
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - error
+          properties:
+            error:
+              type: string
+  404:
+    description: Hero not found.
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - error
+          properties:
+            error:
+              type: string
+definitions:
+  HeroResponse:
+    type: object
+    properties:
+      id:
+        type: integer
+        description: Hero's unique identifier
+      name:
+        type: string
+        description: Hero's name
+      suit_color:
+        type: string
+        description: Hero's suit color
+      has_cape:
+        type: boolean
+        description: Whether the hero has a cape
+      last_mission:
+        type: string
+        format: date-time
+        description: Hero's last mission date
+      is_retired:
+        type: boolean
+        description: Whether the hero is retired
+    required:
+      - id
+      - name
+      - suit_color
+      - has_cape
+      - last_mission
+      - is_retired

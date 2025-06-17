@@ -1,0 +1,83 @@
+summary: Add a new hero
+description: Create a new hero
+tags:
+  - Heroes
+consumes:
+  - application/json
+parameters:
+  - in: body
+    name: hero
+    description: Hero data
+    schema:
+      $ref: '#/definitions/Hero'
+    required: true
+responses:
+  201:
+    description: Hero added successfully
+    schema:
+      $ref: '#/definitions/HeroResponse'
+  400:
+    description: Invalid request data
+  500:
+    description: Internal server error
+definitions:
+  Hero:
+    type: object
+    properties:
+      name:
+        type: string
+        description: Hero's name
+      suit_color:
+        type: string
+        description: Hero's suit color
+      has_cape:
+        type: boolean
+        description: Whether the hero has a cape
+      last_mission:
+        type: string
+        format: date-time
+        description: Hero's last mission date
+      is_retired:
+        type: boolean
+        description: Whether the hero is retired
+      powers:
+        type: array
+        items:
+          type: string
+          description: Hero's powers
+    required:
+      - name
+      - suit_color
+      - has_cape
+      - last_mission
+      - is_retired
+      - powers
+HeroResponse:
+  type: object
+  properties:
+    id:
+      type: integer
+      description: Hero's unique identifier
+    name:
+      type: string
+      description: Hero's name
+    suit_color:
+      type: string
+      description: Hero's suit color
+    has_cape:
+      type: boolean
+      description: Whether the hero has a cape
+    last_mission:
+      type: string
+      format: date-time
+      description: Hero's last mission date
+    is_retired:
+      type: boolean
+      description: Whether the hero is retired
+  required:
+    - id
+    - name
+    - suit_color
+    - has_cape
+    - last_mission
+    - is_retired

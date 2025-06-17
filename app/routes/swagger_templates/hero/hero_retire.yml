@@ -1,0 +1,56 @@
+summary: Retire a hero
+description: Updates a hero's status to is_retired=True.
+tags:
+  - Heroes
+parameters:
+  - name: id
+    in: path
+    type: integer
+    required: true
+    description: The ID of the hero to retire.
+responses:
+  200:
+    description: Hero retired successfully.
+    schema:
+      $ref: '#/definitions/HeroResponse'
+  404:
+    description: Hero not found.
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - error
+          properties:
+            error:
+              type: string
+definitions:
+  HeroResponse:
+    type: object
+    properties:
+      id:
+        type: integer
+        description: Hero's unique identifier
+      name:
+        type: string
+        description: Hero's name
+      suit_color:
+        type: string
+        description: Hero's suit color
+      has_cape:
+        type: boolean
+        description: Whether the hero has a cape
+      last_mission:
+        type: string
+        format: date-time
+        description: Hero's last mission date
+      is_retired:
+        type: boolean
+        description: Whether the hero is retired
+    required:
+      - id
+      - name
+      - suit_color
+      - has_cape
+      - last_mission
+      - is_retired

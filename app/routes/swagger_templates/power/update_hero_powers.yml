@@ -1,0 +1,49 @@
+summary: Update a hero's powers
+description: Replaces or modifies the list of powers for a specific hero. Existing powers in the provided array are untouched. New powers are added. Existing powers missing from the array are removed.
+tags:
+  - Powers
+parameters:
+  - name: hero_id
+    in: path
+    type: integer
+    required: true
+    description: The ID of the hero whose powers are to be updated.
+  - in: body
+    name: powers_data
+    description: JSON object containing the list of power names for the hero.
+    schema:
+      type: object
+      required:
+        - powers
+      properties:
+        powers:
+          type: array
+          items:
+            type: string
+          description: An array of power names (strings).
+responses:
+  200:
+    description: Hero powers updated successfully.
+  400:
+    description: Invalid request data.
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - error
+          properties:
+            error:
+              type: string
+  404:
+    description: Hero not found.
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - error
+          properties:
+            error:
+              type: string
+
