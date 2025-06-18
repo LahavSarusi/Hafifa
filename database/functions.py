@@ -1,6 +1,7 @@
+from datetime import datetime
 from typing import Any, List, Optional
 from app.schemas.hero import HeroSchema, NewHero
-from database.hero_queries import get_heroes_by_filters, add_hero_with_powers
+from database.hero_queries import get_heroes_by_filters, add_hero_with_powers, get_hero_by_id
 
 
 def get_heroes(name: Optional[str] = None, suit_color: Optional[str] = None, has_cape: Optional[bool] = None) -> List[dict[str, Any]]:
@@ -27,3 +28,33 @@ def add_hero_with_his_powers(new_hero: NewHero) -> dict[str, Any]:
     powers = hero_dict.pop('powers')
     hero = add_hero_with_powers(hero_dict, powers)
     return HeroSchema.from_orm(hero).model_dump(mode='json')
+
+
+def set_hero_is_retired(hero_id: int) -> dict[str, Any]:
+    """
+    If the hero exists, is_retired field sets to True.
+
+    Query Parameters:
+    - hero_id: int
+    """
+    hero = get_hero_by_id(hero_id=int(hero_id))
+    if not hero:
+        return {'error': 'Hero not found'}
+
+    hero.is_retired = True
+    return hero
+
+def set_hero_last_mission(timestamp_as_string: str) -> dict[str, Any]:
+    """
+    If the hero exists, last_mission field sets to the given timestamp.
+
+    Query Parameters:
+    - hero_id: int
+    """
+    hero = get_hero_by_id(hero_id=int(id))
+    if not hero:
+        return {'error': 'Hero not found'}
+
+    timestamp_as_datetime = datetime.strptime(timestamp_as_string, '%Y-%m-%dT%H:%M:%S.%fZ')
+    hero.last_mission = timestamp_as_datetime
+    return hero
