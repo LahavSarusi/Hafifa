@@ -12,7 +12,8 @@ setup(
         'pytest',
         'flasgger',
         'pydantic==2.7.1',
-        'pyodbc'
+        'pyodbc',
+        'Flask-SocketIO'
     ],
     tests_require=[
         'pytest'

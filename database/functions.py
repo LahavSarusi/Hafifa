@@ -2,6 +2,7 @@ from datetime import datetime
 from typing import Any, List, Optional
 from app.schemas.hero import HeroSchema, NewHero
 from database.hero_queries import get_heroes_by_filters, add_hero_with_powers, get_hero_by_id
+from database.models.hero import Hero
 
 
 def get_heroes(name: Optional[str] = None, suit_color: Optional[str] = None, has_cape: Optional[bool] = None) -> List[dict[str, Any]]:
@@ -30,7 +31,7 @@ def add_hero_with_his_powers(new_hero: NewHero) -> dict[str, Any]:
     return HeroSchema.from_orm(hero).model_dump(mode='json')
 
 
-def set_hero_is_retired(hero_id: int) -> dict[str, Any]:
+def set_hero_is_retired(hero_id: int) -> Optional[Hero]:
     """
     If the hero exists, is_retired field sets to True.
 
@@ -44,7 +45,7 @@ def set_hero_is_retired(hero_id: int) -> dict[str, Any]:
     hero.is_retired = True
     return hero
 
-def set_hero_last_mission(timestamp_as_string: str) -> dict[str, Any]:
+def set_hero_last_mission(timestamp_as_string: str) -> Optional[Hero]:
     """
     If the hero exists, last_mission field sets to the given timestamp.
 

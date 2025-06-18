@@ -3,6 +3,7 @@ from flask import request
 from flasgger import swag_from
 
 from app.decorators import commit_db
+from app.main import socketio
 from database.functions import get_heroes, add_hero_with_his_powers, set_hero_is_retired, set_hero_last_mission
 from database.hero_queries import get_hero_by_id
 from app.schemas.hero import HeroFilters, NewHero, HeroSchema
@@ -45,8 +46,9 @@ class RetireHero(Resource):
         Retire a hero by setting his is_retired field to True.
         """
         hero = set_hero_is_retired(hero_id=int(id))
-        return HeroSchema.from_orm(hero).model_dump(mode='json'), 200
-
+        hero_to_json = HeroSchema.from_orm(hero).model_dump(mode='json')
+        socketio.emit('hero_retired', hero_to_json)
+        return hero_to_json
 
 class UpdateHeroLastMission(Resource):
     @commit_db(db)
