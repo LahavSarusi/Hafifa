@@ -48,6 +48,7 @@ def set_hero_last_mission(hero_id: int, timestamp_as_string: str) -> Optional[He
 
     Query Parameters:
     - hero_id: int
+    - timestamp_as_string: str
     """
     hero = get_hero_by_id(hero_id=hero_id)
     timestamp_as_datetime = datetime.strptime(timestamp_as_string, '%Y-%m-%dT%H:%M:%S.%fZ')
