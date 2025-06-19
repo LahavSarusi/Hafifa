@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import Any, List, Optional
 from app.schemas.hero import HeroSchema, NewHero
-from database.hero_queries import get_heroes_by_filters, add_hero_with_powers, get_hero_by_id
+from database.queries.hero_queries import get_heroes_by_filters, add_hero_with_powers, get_hero_by_id
 from database.models.hero import Hero
 
 
@@ -39,23 +39,17 @@ def set_hero_is_retired(hero_id: int) -> Optional[Hero]:
     - hero_id: int
     """
     hero = get_hero_by_id(hero_id=int(hero_id))
-    if not hero:
-        return {'error': 'Hero not found'}
-
     hero.is_retired = True
     return hero
 
-def set_hero_last_mission(timestamp_as_string: str) -> Optional[Hero]:
+def set_hero_last_mission(hero_id: int, timestamp_as_string: str) -> Optional[Hero]:
     """
     If the hero exists, last_mission field sets to the given timestamp.
 
     Query Parameters:
     - hero_id: int
     """
-    hero = get_hero_by_id(hero_id=int(id))
-    if not hero:
-        return {'error': 'Hero not found'}
-
+    hero = get_hero_by_id(hero_id=hero_id)
     timestamp_as_datetime = datetime.strptime(timestamp_as_string, '%Y-%m-%dT%H:%M:%S.%fZ')
     hero.last_mission = timestamp_as_datetime
     return hero

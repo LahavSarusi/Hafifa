@@ -1,7 +1,9 @@
+from werkzeug.exceptions import NotFound
+
 from database.models import db
 from database.models.hero import Hero
 from database.models.power import Power
-from typing import List, Optional, Dict, Any
+from typing import List, Optional, Dict
 
 
 def get_hero_by_id(hero_id: int) -> Optional[Hero]:
@@ -12,9 +14,9 @@ def get_hero_by_id(hero_id: int) -> Optional[Hero]:
     - hero_id (int): Search a hero with the id
     """
     hero = Hero.query.get(hero_id)
-    if hero:
-        return hero
-    return None
+    if not hero:
+        raise NotFound(f"Hero with ID {hero_id} not found.")
+    return hero
 
 
 def get_heroes_by_filters(name: Optional[str] = None, suit_color: Optional[str] = None,

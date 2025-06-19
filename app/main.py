@@ -2,7 +2,6 @@ from datetime import datetime
 
 from flask import Flask
 from flasgger import Swagger
-from flask_socketio import SocketIO
 
 from database.models import db
 from database.models.hero import Hero
@@ -52,24 +51,7 @@ with app.app_context():
 
 swagger = Swagger(app, template_file=None)
 
-socketio = SocketIO(
-    app,
-    cors_allowed_origins="*",
-    logger=True,
-    engineio_logger=True,
-)
-
-
-@socketio.on('connect')
-def on_connect():
-    print('Client connected')
-
-
-@socketio.on('disconnect')
-def on_disconnect():
-    print('Client disconnected')
-
-
 if __name__ == '__main__':
     from routes.views import app
+
     app.run(debug=True, port=5000)
