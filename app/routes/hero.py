@@ -1,12 +1,11 @@
-from datetime import datetime
-
 from flask_restful import Resource
 from flask import request
 from flasgger import swag_from
 
 from app.decorators import commit_db
-from database.functions import get_heroes, add_hero_with_his_powers
-from database.hero_queries import get_hero_by_id
+from app.socketio_manager import socketio
+from database.services.hero_service import get_heroes, add_hero_with_his_powers, set_hero_is_retired, set_hero_last_mission
+from database.queries.hero_queries import get_hero_by_id
 from app.schemas.hero import HeroFilters, NewHero, HeroSchema
 from database.models import db
 
@@ -15,8 +14,6 @@ class HeroById(Resource):
     @swag_from('swagger_templates\hero\hero_by_id.yml')
     def get(self, id):
         hero = get_hero_by_id(hero_id=int(id))
-        if not hero:
-            return {'error': 'Hero not found'}, 404
         return HeroSchema.from_orm(hero).model_dump(mode='json')
 
 
@@ -46,14 +43,10 @@ class RetireHero(Resource):
         """
         Retire a hero by setting his is_retired field to True.
         """
-        # Check if the hero exists
-        hero = get_hero_by_id(hero_id=int(id))
-        if not hero:
-            return {'error': 'Hero not found'}, 404
-
-        hero.is_retired = True
-        return HeroSchema.from_orm(hero).model_dump(mode='json'), 200
-
+        hero = set_hero_is_retired(hero_id=int(id))
+        hero_to_json = HeroSchema.from_orm(hero).model_dump(mode='json')
+        socketio.emit('hero_retired', hero_to_json)
+        return hero_to_json
 
 class UpdateHeroLastMission(Resource):
     @commit_db(db)
@@ -62,13 +55,6 @@ class UpdateHeroLastMission(Resource):
         """
         Updates a hero's last_mission attribute to a given timestamp.
         """
-        # Check if the hero exists
-        hero = get_hero_by_id(hero_id=int(id))
-        if not hero:
-            return {'error': 'Hero not found'}, 404
-
         timestamp_as_string = request.json['timestamp']
-        timestamp_as_datetime = datetime.strptime(timestamp_as_string, '%Y-%m-%dT%H:%M:%S.%fZ')
-        hero.last_mission = timestamp_as_datetime
-
+        hero = set_hero_last_mission(int(id), timestamp_as_string)
         return HeroSchema.from_orm(hero).model_dump(mode='json'), 200

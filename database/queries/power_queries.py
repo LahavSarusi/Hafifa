@@ -1,3 +1,5 @@
+from werkzeug.exceptions import NotFound
+
 from database.models.power import Power
 from database.models import db
 from typing import List
@@ -11,6 +13,8 @@ def get_powers_by_hero_id(hero_id: int) -> List[Power]:
     - hero_id (str): Search the powers by their hero id
     """
     powers = Power.query.filter_by(hero_id=hero_id).all()
+    if not powers:
+        raise NotFound(f"Powers with hero ID {hero_id} not found.")
     return powers
 
 

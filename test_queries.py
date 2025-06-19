@@ -3,12 +3,13 @@ from unittest.mock import patch, MagicMock
 from flask import Flask
 from datetime import datetime
 import pytest
+from werkzeug.exceptions import NotFound
 
 from app.schemas.hero import HeroSchema
 from database.models.hero import Hero
 from database.models.power import Power
-from database.power_queries import get_powers_by_hero_id
-from database.hero_queries import get_hero_by_id, get_heroes_by_filters, add_hero_with_powers
+from database.queries.power_queries import get_powers_by_hero_id
+from database.queries.hero_queries import get_hero_by_id, get_heroes_by_filters, add_hero_with_powers
 from database.sql_conf import SqliteTestConfig
 from app.main import db
 
@@ -62,14 +63,15 @@ class TestHeroPower(unittest.TestCase):
         assert retrieved_hero.id == 1
 
     def test_get_hero_by_id_not_found(self):
-        # Arrange: Setup the test data
+        # Arrange
         hero_id = 999
 
-        # Act: Get the hero by id
-        result = get_hero_by_id(hero_id)
+        # Act + Assert: Get a hero by non-existent id
+        with pytest.raises(NotFound) as exc_info:
+            get_hero_by_id(hero_id)
 
         # Assert: Verify the hero is not found by id
-        assert result is None
+        assert f"Hero with ID {hero_id} not found." in str(exc_info.value)
 
     def test_get_heroes_by_filters_name(self):
         # Arrange: Setup the test data
@@ -134,11 +136,12 @@ class TestHeroPower(unittest.TestCase):
         # Arrange: Setup the test data
         hero_id = 999
 
-        # Act: Query powers by non-existent hero id
-        result = get_powers_by_hero_id(hero_id)
+        # Act + Assert: Query powers by non-existent hero id
+        with pytest.raises(NotFound) as exc_info:
+            get_powers_by_hero_id(hero_id)
 
         # Assert: Verify the powers are not found by hero id
-        assert result == []
+        assert f"Powers with hero ID {hero_id} not found." in str(exc_info.value)
 
     def test_add_hero_with_powers_success(self):
         # Arrange: Setup the test data
@@ -162,7 +165,7 @@ class TestHeroPower(unittest.TestCase):
         assert result_powers[0].name == hero_powers[0]
         assert result_powers[1].name == hero_powers[1]
 
-    @patch('database.hero_queries.Hero')
+    @patch('database.queries.hero_queries.Hero')
     def test_get_hero_by_id_raise_exception(self, mock_hero_class):
         # Arrange: Simulate an error when querying a hero by id
         mock_query = MagicMock()
@@ -175,7 +178,7 @@ class TestHeroPower(unittest.TestCase):
             get_hero_by_id(hero_id)
         assert str(exc_info.value) == "Database error"
 
-    @patch('database.hero_queries.Hero')
+    @patch('database.queries.hero_queries.Hero')
     def test_get_heroes_by_filters_raise_exception(self, mock_hero_class):
         # Arrange: Simulate an error when querying heroes by filters
         mock_query = MagicMock()
@@ -189,7 +192,7 @@ class TestHeroPower(unittest.TestCase):
             get_heroes_by_filters()
         assert str(exc_info.value) == "Database error"
 
-    @patch('database.power_queries.Power')
+    @patch('database.queries.power_queries.Power')
     def test_get_powers_by_hero_id_error(self, mock_power_class):
         # Arrange: Simulate an error when querying powers by hero id
         mock_query = MagicMock()
@@ -203,7 +206,7 @@ class TestHeroPower(unittest.TestCase):
             get_powers_by_hero_id(hero_id)
         assert str(exc_info.value) == "Database error"
 
-    @patch('database.hero_queries.db')
+    @patch('database.queries.hero_queries.db')
     def test_add_hero_with_powers_raise_exception(self, mock_hero_class):
         # Arrange: Simulate an error when creating a hero
         mock_query = MagicMock()

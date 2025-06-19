@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Hero Retirement Tracker</title>
+</head>
+<body>
+  <h1>Hero Retirement Tracker</h1>
+  <div id="events"></div>
+
+  <script src="https://cdn.socket.io/4.6.1/socket.io.min.js"></script>
+  <script>
+    const socket = io('http://127.0.0.1:5000');
+
+    socket.on('connect', () => {
+      console.log('Connected to server');
+    });
+
+    socket.on('hero_retired', (data) => {
+      console.log('hero_retired event received:', data);
+      const eventDiv = document.createElement('div');
+      eventDiv.textContent = `Hero ${data.name} retired: ${data.is_retired}`;
+      document.getElementById('events').appendChild(eventDiv);
+    });
+
+    socket.on('disconnect', () => {
+      console.log('Disconnected from server');
+    });
+  </script>
+
+
+
+</body>
+</html>
