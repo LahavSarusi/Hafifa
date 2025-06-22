@@ -1,8 +1,8 @@
 from flask_socketio import SocketIO
-from app.main import app
+from app import flask_app
 
 socketio = SocketIO(
-    app,
+    app=flask_app,
     cors_allowed_origins="*",
     logger=True,
     engineio_logger=True,
