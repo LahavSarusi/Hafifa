@@ -90,3 +90,7 @@ Desktop.ini
 *.db
 *.pkl
 *.bak
+
+
+# Celery
+**/celerybeat-schedule.*

@@ -1,9 +1,11 @@
 from app import flask_app
-from app.extension.celery.deployer import auto_retire_inactive_heroes
+from celery.schedules import crontab
 
 celery_app = flask_app.extensions["celery"]
-# Just to myself -> The command that runs the Celery app instance:
-# $celery -A app.extension.celery.make_celery worker --pool solo -l info
 
-# Triggered auto retirement task
-auto_retire_inactive_heroes.delay()
+celery_app.conf.beat_schedule = {
+    'auto-retire-inactive-heroes-every-5-mins': {
+        'task': 'app.extension.celery.deployer.auto_retire_inactive_heroes',
+        'schedule': crontab(minute='*/5'),  # Every 5 minutes
+    },
+}
