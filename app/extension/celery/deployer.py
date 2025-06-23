@@ -3,6 +3,7 @@ import os
 from celery import shared_task
 from datetime import datetime, timedelta
 from database.models.hero import Hero
+from database.models import db
 
 BASE_API_URL = os.getenv("FLASK_API_URL", "http://localhost:5000")
 
@@ -32,7 +33,7 @@ def auto_retire_inactive_heroes():
     now = datetime.utcnow()
     cutoff = now - timedelta(hours=24)
 
-    inactive_heroes = Hero.query.filter_by(is_retired=False).all()
+    inactive_heroes = db.session.query(Hero).filter_by(is_retired=False).all()
     for hero in inactive_heroes:
         if hero.last_mission < cutoff:
             trigger_retire_hero.delay(hero.id)

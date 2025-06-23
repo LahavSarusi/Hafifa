@@ -1,7 +1,7 @@
 from flask import Flask
 from flask_restful import Api
 
-from app.main import db
+from database.models import db
 from app.routes.hero import HeroesList
 from database.sql_conf import SqliteTestConfig
 

@@ -11,7 +11,7 @@ from database.models.power import Power
 from database.queries.power_queries import get_powers_by_hero_id
 from database.queries.hero_queries import get_hero_by_id, get_heroes_by_filters, add_hero_with_powers
 from database.sql_conf import SqliteTestConfig
-from app.main import db
+from database.models import db
 
 
 class TestHeroPower(unittest.TestCase):
