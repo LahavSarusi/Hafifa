@@ -3,9 +3,9 @@ from flask_restful import Api
 from .index import HealthCheck, CheckSocket
 from .power import PowerByHeroId
 from .hero import HeroById, HeroesList, RetireHero, UpdateHeroLastMission
-from app.main import app
+from app import flask_app
 
-api = Api(app)
+api = Api(flask_app)
 
 def add_api_resources():
     api.add_resource(HealthCheck, '/')

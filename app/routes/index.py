@@ -15,4 +15,4 @@ class HealthCheck(Resource):
 
 class CheckSocket(Resource):
     def get(self):
-        return send_file('index.html')
+        return send_file('extension/socket/index.html')

@@ -3,8 +3,9 @@ from flask import request
 from flasgger import swag_from
 
 from app.decorators import commit_db
-from app.socketio_manager import socketio
-from database.services.hero_service import get_heroes, add_hero_with_his_powers, set_hero_is_retired, set_hero_last_mission
+from app.extension.socket.socketio_manager import socketio
+from database.services.hero_service import get_heroes, add_hero_with_his_powers, set_hero_is_retired, \
+    set_hero_last_mission
 from database.queries.hero_queries import get_hero_by_id
 from app.schemas.hero import HeroFilters, NewHero, HeroSchema
 from database.models import db
@@ -48,9 +49,10 @@ class RetireHero(Resource):
         socketio.emit('hero_retired', hero_to_json)
         return hero_to_json
 
+
 class UpdateHeroLastMission(Resource):
     @commit_db(db)
-    @swag_from('swagger_templates/hero/update_hero_last_mission.yml') 
+    @swag_from('swagger_templates/hero/update_hero_last_mission.yml')
     def put(self, id):
         """
         Updates a hero's last_mission attribute to a given timestamp.

@@ -14,7 +14,10 @@ setup(
         'pydantic==2.7.1',
         'pyodbc',
         'Flask-SocketIO',
-        'werkzeug==2.3.8'
+        'werkzeug==2.3.8',
+        'celery',
+        'redis',
+        'requests'
     ],
     tests_require=[
         'pytest'
